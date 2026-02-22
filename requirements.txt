@@ -1,0 +1,11 @@
+streamlit
+pandas
+numpy
+yfinance
+plotly
+fpdf
+gspread
+oauth2client
+fastapi
+uvicorn
+pydantic

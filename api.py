@@ -55,7 +55,9 @@ def get_position_status_rich(current_price, avg_buy_price):
     diff = current_price - avg_buy_price
     percent_change = (diff / avg_buy_price) * 100
     val_diff_czk = int(diff * KURZ_USD_CZK)
-    if percent_change >= 0:
+    if abs(percent_change) < 1.0:
+        return {"style": "neutral", "icon": "⏳", "title": "PRÁVĚ NAKOUPENO", "subtitle": "Investice je čerstvá, dej jí čas.", "desc": "Trh se hýbe každý den. Klid, tvé peníze pracují."}
+    elif percent_change >= 0:
         return {"style": "green", "icon": "📈", "title": "VŠECHNO ZELENÉ", "subtitle": f"Tvá investice vyrostla o {percent_change:.1f} %.", "desc": "Peníze pracují za tebe. Nedělej nic, jen se dívej."}
     else:
         return {"style": "blue", "icon": "🏷️", "title": f"AKCE: SLEVA {abs(percent_change):.1f} %", "subtitle": f"Nyní levnější o {abs(val_diff_czk)} Kč/ks.", "desc": "Trh ti nabízí stejnou firmu za méně peněz. Je to jako Black Friday."}
@@ -171,7 +173,7 @@ def calculate_portfolio(items: List[PortfolioItem]):
                     kalendar_prijmu[m] += castka_per_mesic
 
         diff_percent = ((curr_price - p.buy_price_usd) / p.buy_price_usd) * 100
-        if diff_percent < nejvetsi_sleva:
+        if diff_percent < -1.0 and diff_percent < nejvetsi_sleva:
             nejvetsi_sleva = diff_percent
             akce_ticker = firma['name']
 

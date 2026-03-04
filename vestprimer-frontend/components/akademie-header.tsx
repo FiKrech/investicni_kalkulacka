@@ -12,7 +12,7 @@ export function AkademieHeader() {
             {"Rychlokurz."}
             <br />
             <span className="text-glow-white">
-              {"3 minuty pro vetsi bezpeci."}
+              {"3 minuty pro větší bezpečí."}
             </span>
           </h1>
         </div>

@@ -57,7 +57,7 @@ export function LessonCard({ progress, totalSegments, onAdvance }: LessonCardPro
             <div className="absolute inset-0 rounded-full bg-trust-blue/20 blur-3xl" />
             <Image
               src="/images/pizza-slice-3d.jpg"
-              alt="3D ilustrace kusu pizzy - analogie k deleni akcii"
+              alt="3D ilustrace kusu pizzy - analogie k dělení akcií"
               fill
               className="relative z-10 rounded-2xl object-contain drop-shadow-2xl"
               priority
@@ -74,7 +74,7 @@ export function LessonCard({ progress, totalSegments, onAdvance }: LessonCardPro
 
           {/* Explanation text */}
           <p className="mb-6 text-[15px] leading-relaxed text-muted-foreground">
-            {"Kdyz rozkrajis pizzu na 10 dilku misto 4, neni najednou vetsi. Stejne tak akcie za 50 Kc neni levnejsi nez akcie za 500 Kc."}
+            {"Když rozkrojíš pizzu na 10 dílků místo 4, není najednou větší. Stejně tak akcie za 50 Kč není levnější než akcie za 500 Kč."}
           </p>
 
           {/* Action buttons */}
@@ -101,9 +101,9 @@ export function LessonCard({ progress, totalSegments, onAdvance }: LessonCardPro
                     <span className="text-primary-foreground">{"Super!"}</span>
                   </>
                 ) : isComplete ? (
-                  <span>{"Kurz dokoncen!"}</span>
+                  <span>{"Kurz dokončen!"}</span>
                 ) : (
-                  <span>{"Aha, chapu!"}</span>
+                  <span>{"Aha, chápu!"}</span>
                 )}
               </span>
               {!confirmed && !isComplete && (
@@ -122,7 +122,7 @@ export function LessonCard({ progress, totalSegments, onAdvance }: LessonCardPro
               aria-controls="detail-panel"
             >
               <Search className="h-4 w-4" />
-              <span>{"Podrobneji"}</span>
+              <span>{"Podrobněji"}</span>
               <ChevronDown
                 className="h-4 w-4 transition-transform duration-300"
                 style={{
@@ -151,11 +151,11 @@ export function LessonCard({ progress, totalSegments, onAdvance }: LessonCardPro
                   <Lightbulb className="h-3.5 w-3.5 text-trust-blue-light" />
                 </div>
                 <span className="text-xs font-semibold uppercase tracking-wider text-trust-blue-light">
-                  {"Detailni vysvetleni"}
+                  {"DETAILNÍ VYSVĚTLENÍ"}
                 </span>
               </div>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                {"Muzes kupovat i zlomky akcii. Dulezite je financni zdravi firmy, ne cena jedne akcie. Zalezi, jaky kus firmy celkove kupujes."}
+                {"Můžeš kupovat i zlomky akcií. Důležité je finanční zdraví firmy, ne cena jedné akcie. Záleží, jaký kus firmy celkově kupuješ."}
               </p>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react"
 import { AkademieHeader } from "@/components/akademie-header"
 import { LessonCard } from "@/components/lesson-card"
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard"
+import { DisclaimerBanner } from "@/components/disclaimer-banner"
 
 const TOTAL_SEGMENTS = 4
 
@@ -72,6 +73,7 @@ export default function VestPrimerApp() {
   // Modální okno
   const [buyModalStock, setBuyModalStock] = useState<any>(null)
   const [buyAmount, setBuyAmount] = useState<number>(1)
+  const [showBuySuccess, setShowBuySuccess] = useState(false)
 
   // Akademie
   const [progress, setProgress] = useState(0)
@@ -107,8 +109,7 @@ export default function VestPrimerApp() {
       buy_price_usd: buyModalStock.aktualni_cena_usd
     }
     setMyPortfolio([...myPortfolio, newItem])
-    setBuyModalStock(null)
-    setBuyAmount(1)
+    setShowBuySuccess(true)
   }
 
   // UPRAVENÝ NÁKUP S GOD MODEM
@@ -150,7 +151,10 @@ export default function VestPrimerApp() {
             
             {/* KROK 1: DOTAZNÍK */}
             {appState === "onboarding" && (
-              <OnboardingWizard onComplete={handleWizardComplete} />
+              <>
+                <OnboardingWizard onComplete={handleWizardComplete} />
+                <DisclaimerBanner variant="onboarding" />
+              </>
             )}
 
             {/* KROK 2: VÝBĚR AKCIÍ */}
@@ -253,7 +257,8 @@ export default function VestPrimerApp() {
                   <div className="bg-[#111] border border-white/5 rounded-2xl p-4 flex flex-col justify-center shadow-lg">
                     <div className="text-[#a855f7] mb-2 bg-[#581c87]/30 w-8 h-8 flex items-center justify-center rounded-full text-xs">🕒</div>
                     <p className="text-[10px] text-white/40 uppercase font-bold mb-1">Další divi</p>
-                    <p className="font-bold text-sm">14 dní</p>
+                    {/* TODO: napojit na reálný ex-dividend date z API */}
+                    <p className="font-bold text-sm">Brzy</p>
                   </div>
                 </div>
 
@@ -314,8 +319,8 @@ export default function VestPrimerApp() {
                         </div>
                         <p className="font-bold text-lg">{item.hodnota_czk.toLocaleString("cs-CZ")} Kč</p>
                       </div>
-                      <div className={`p-4 ${item.status.style === 'green' ? 'bg-[#022c16]/50' : 'bg-[#1e3a8a]/30'}`}>
-                        <div className={`flex items-center gap-2 mb-1 ${item.status.style === 'green' ? 'text-[#22c55e]' : 'text-[#3b82f6]'}`}>
+                      <div className={`p-4 ${item.status.style === 'green' ? 'bg-[#022c16]/50' : item.status.style === 'neutral' ? 'bg-white/5' : 'bg-[#1e3a8a]/30'}`}>
+                        <div className={`flex items-center gap-2 mb-1 ${item.status.style === 'green' ? 'text-[#22c55e]' : item.status.style === 'neutral' ? 'text-white/60' : 'text-[#3b82f6]'}`}>
                           <span className="text-2xl">{item.status.icon}</span>
                           <span className="font-bold tracking-wide">{item.status.title}</span>
                         </div>
@@ -388,65 +393,139 @@ export default function VestPrimerApp() {
 
       </main>
 
-      {/* Modální okno pro nákup - nedotčené a 100% funkční! */}
+      {/* Modální okno pro nákup */}
       {buyModalStock && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-sm bg-[#111827] border border-white/10 rounded-3xl p-6 shadow-2xl">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold">Nastavení nákupu</h3>
-              <button onClick={() => setBuyModalStock(null)} className="text-white/40 hover:text-white p-1 text-xl">✕</button>
-            </div>
-            
-            <div className="flex items-center gap-4 mb-6 bg-white/5 p-4 rounded-2xl border border-white/5">
-              <img src={`https://financialmodelingprep.com/image-stock/${buyModalStock.ticker}.png`} alt={buyModalStock.ticker} className="w-12 h-12 rounded-full bg-white p-1 shadow-md" />
-              <div>
-                <p className="text-xs text-white/50 uppercase tracking-wider mb-1 font-semibold">{buyModalStock.name}</p>
-                <p className="text-2xl font-bold">{buyModalStock.aktualni_cena_usd} USD</p>
-              </div>
-            </div>
+          <div className="w-full max-w-sm bg-[#111827] border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden relative">
 
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-white/70 mb-3">Kolik akcií chceš koupit?</label>
-              <div className="flex items-center bg-black/50 border border-white/10 rounded-xl p-2">
-                <button onClick={() => setBuyAmount(Math.max(0.1, buyAmount - 1))} className="w-12 h-12 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-lg text-2xl font-bold transition-colors">-</button>
-                <input 
-                  type="number" 
-                  value={buyAmount} 
-                  onChange={(e) => setBuyAmount(Number(e.target.value))}
-                  className="flex-1 bg-transparent text-center text-3xl font-extrabold focus:outline-none"
-                />
-                <button onClick={() => setBuyAmount(buyAmount + 1)} className="w-12 h-12 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-lg text-2xl font-bold transition-colors">+</button>
-              </div>
-              <div className={`mt-4 text-center p-3 rounded-xl border ${partner.bgLightClass} ${partner.borderClass}`}>
-                <p className="text-sm text-white/80">Bude tě to stát cca</p>
-                <p className={`text-xl font-bold ${partner.textClass}`}>{Math.round(buyAmount * buyModalStock.aktualni_cena_usd * 23.50).toLocaleString("cs-CZ")} Kč</p>
-              </div>
-            </div>
+            {showBuySuccess ? (
+              /* ——— SUCCESS SCREEN ——— */
+              <>
+                {/* CSS konfety */}
+                <style>{`
+                  @keyframes confetti-fall {
+                    0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+                    100% { transform: translateY(120px) rotate(360deg); opacity: 0; }
+                  }
+                  @keyframes check-pop {
+                    0%   { transform: scale(0.4); opacity: 0; }
+                    60%  { transform: scale(1.15); }
+                    100% { transform: scale(1); opacity: 1; }
+                  }
+                  .confetti-piece { position: absolute; top: 0; animation: confetti-fall 1.4s ease-in forwards; font-size: 1.25rem; pointer-events: none; }
+                  .check-pop { animation: check-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+                `}</style>
 
-            <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl mb-6 flex gap-3">
-              <span className="text-yellow-400">ℹ️</span>
-              <p className="text-xs text-yellow-200/70 leading-relaxed"><strong>Spread (Poplatek):</strong> Cca 0.5 %. To je normální, nelekni se malého mínusu po nákupu.</p>
-            </div>
+                {/* Konfety emoji */}
+                {["🎊","🎉","✨","🎊","🎉","✨","🎊"].map((e, i) => (
+                  <span key={i} className="confetti-piece" style={{ left: `${10 + i * 13}%`, animationDelay: `${i * 0.1}s` }}>{e}</span>
+                ))}
 
-            <button 
-              onClick={confirmBuy}
-              className={`w-full py-4 rounded-xl text-white font-bold text-lg transition-all ${partner.btnClass}`}
-            >
-              ✅ Potvrdit nákup
-            </button>
+                <div className="flex flex-col items-center text-center pt-4 pb-2">
+                  {/* Checkmark s glow */}
+                  <div className="check-pop relative mb-5">
+                    <div className="absolute inset-0 rounded-full bg-emerald-500/30 blur-xl scale-150" />
+                    <div className="relative w-20 h-20 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-5xl">
+                      ✅
+                    </div>
+                  </div>
+
+                  <h3 className="text-2xl font-black mb-1">Gratulujeme! 🎉</h3>
+                  <p className="text-white/60 text-sm mb-6">Tvé peníze začínají pracovat.</p>
+
+                  {/* Info box — počet kusů a cena */}
+                  <div className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mb-3 flex items-center gap-3 text-left">
+                    <img src={`https://financialmodelingprep.com/image-stock/${buyModalStock.ticker}.png`} alt={buyModalStock.ticker} className="w-10 h-10 rounded-full bg-white p-1 shrink-0" />
+                    <div>
+                      <p className="text-xs text-white/50 uppercase tracking-wider font-semibold mb-0.5">{buyModalStock.name}</p>
+                      <p className="text-sm font-bold text-white">
+                        {buyAmount} ks · {Math.round(buyAmount * buyModalStock.aktualni_cena_usd * 23.50).toLocaleString("cs-CZ")} Kč
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Dividenda (pouze pokud > 0) */}
+                  {buyModalStock.div_yield > 0 && (
+                    <div className="w-full bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 mb-6 text-left">
+                      <p className="text-xs text-emerald-400/70 uppercase tracking-wider font-semibold mb-1">Odhadovaný roční příjem z dividendy</p>
+                      <p className="text-lg font-black text-emerald-400">
+                        +{Math.round(buyAmount * buyModalStock.aktualni_cena_usd * 23.50 * (buyModalStock.div_yield / 100)).toLocaleString("cs-CZ")} Kč
+                      </p>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={() => { setBuyModalStock(null); setShowBuySuccess(false); setBuyAmount(1) }}
+                    className={`w-full py-4 rounded-xl text-white font-bold text-lg transition-all ${partner.btnClass}`}
+                  >
+                    🚀 Pokračovat
+                  </button>
+                </div>
+              </>
+            ) : (
+              /* ——— FORMULÁŘ ——— */
+              <>
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-bold">Nastavení nákupu</h3>
+                  <button onClick={() => setBuyModalStock(null)} className="text-white/40 hover:text-white p-1 text-xl">✕</button>
+                </div>
+
+                <div className="flex items-center gap-4 mb-6 bg-white/5 p-4 rounded-2xl border border-white/5">
+                  <img src={`https://financialmodelingprep.com/image-stock/${buyModalStock.ticker}.png`} alt={buyModalStock.ticker} className="w-12 h-12 rounded-full bg-white p-1 shadow-md" />
+                  <div>
+                    <p className="text-xs text-white/50 uppercase tracking-wider mb-1 font-semibold">{buyModalStock.name}</p>
+                    <p className="text-2xl font-bold">{buyModalStock.aktualni_cena_usd} USD</p>
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-white/70 mb-3">Kolik akcií chceš koupit?</label>
+                  <div className="flex items-center bg-black/50 border border-white/10 rounded-xl p-2">
+                    <button onClick={() => setBuyAmount(Math.max(0.1, buyAmount - 1))} className="w-12 h-12 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-lg text-2xl font-bold transition-colors">-</button>
+                    <input
+                      type="number"
+                      value={buyAmount}
+                      onChange={(e) => setBuyAmount(Number(e.target.value))}
+                      className="flex-1 bg-transparent text-center text-3xl font-extrabold focus:outline-none"
+                    />
+                    <button onClick={() => setBuyAmount(buyAmount + 1)} className="w-12 h-12 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-lg text-2xl font-bold transition-colors">+</button>
+                  </div>
+                  <div className={`mt-4 text-center p-3 rounded-xl border ${partner.bgLightClass} ${partner.borderClass}`}>
+                    <p className="text-sm text-white/80">Bude tě to stát cca</p>
+                    <p className={`text-xl font-bold ${partner.textClass}`}>{Math.round(buyAmount * buyModalStock.aktualni_cena_usd * 23.50).toLocaleString("cs-CZ")} Kč</p>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl mb-6 flex gap-3">
+                  <span className="text-yellow-400">ℹ️</span>
+                  <p className="text-xs text-yellow-200/70 leading-relaxed"><strong>Spread (Poplatek):</strong> Cca 0.5 %. To je normální, nelekni se malého mínusu po nákupu.</p>
+                </div>
+
+                <button
+                  onClick={confirmBuy}
+                  className={`w-full py-4 rounded-xl text-white font-bold text-lg transition-all ${partner.btnClass}`}
+                >
+                  ✅ Potvrdit nákup
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
 
       {/* Spodní navigace - Upgradovaná na 4 tlačítka podle designu */}
       <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-[#050505]/95 backdrop-blur-xl border-t border-white/5 px-6 py-4 z-50">
+        <DisclaimerBanner variant="footer" />
         <div className="flex justify-between items-center">
-          <button onClick={() => setActiveTab("portfolio")} className={`flex flex-col items-center gap-1 transition-all ${activeTab === "portfolio" && appState === "dashboard" ? partner.textClass : "text-white/30 hover:text-white/60"}`}>
+          <button
+            onClick={() => { setActiveTab("portfolio"); setAppState("onboarding"); setMyPortfolio([]); setPortfolioData(null); setIsGodMode(false) }}
+            className={`flex flex-col items-center gap-1 transition-all ${activeTab === "portfolio" && appState === "onboarding" ? partner.textClass : "text-white/30 hover:text-white/60"}`}
+          >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
             <span className="text-[9px] font-bold uppercase tracking-wider mt-1">Domov</span>
           </button>
-          
-          <button onClick={() => setActiveTab("portfolio")} className={`flex flex-col items-center gap-1 transition-all ${activeTab === "portfolio" && appState !== "dashboard" ? partner.textClass : "text-white/30 hover:text-white/60"}`}>
+
+          <button onClick={() => setActiveTab("portfolio")} className={`flex flex-col items-center gap-1 transition-all ${activeTab === "portfolio" && (appState === "results" || appState === "dashboard") ? partner.textClass : "text-white/30 hover:text-white/60"}`}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
             <span className="text-[9px] font-bold uppercase tracking-wider mt-1">Portfolio</span>
           </button>

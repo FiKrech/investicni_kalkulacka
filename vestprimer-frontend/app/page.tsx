@@ -320,7 +320,7 @@ export default function VestPrimerApp() {
                         <p className="font-bold text-lg">{item.hodnota_czk.toLocaleString("cs-CZ")} Kč</p>
                       </div>
                       <div className={`p-4 ${item.status.style === 'green' ? 'bg-[#022c16]/50' : item.status.style === 'neutral' ? 'bg-white/5' : 'bg-[#1e3a8a]/30'}`}>
-                        <div className={`flex items-center gap-2 mb-1 ${item.status.style === 'green' ? 'text-[#22c55e]' : item.status.style === 'neutral' ? 'text-white/60' : 'text-[#3b82f6]'}`}>
+                        <div className={`flex items-center gap-2 mb-1 ${item.status.style === 'green' ? 'text-[#22c55e]' : item.status.style === 'neutral' ? 'text-white/50' : 'text-[#3b82f6]'}`}>
                           <span className="text-2xl">{item.status.icon}</span>
                           <span className="font-bold tracking-wide">{item.status.title}</span>
                         </div>

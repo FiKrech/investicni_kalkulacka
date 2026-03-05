@@ -47,13 +47,13 @@ const PARTNERS: Record<string, any> = {
   },
   george: {
     name: "George",
-    bgColor: "#0a0a1a",
-    btnClass: "bg-[#1a3dff] hover:bg-[#2a4dff] shadow-blue-700/30",
-    textClass: "text-[#4d8aff]",
-    glowClass: "bg-blue-700/15",
-    borderClass: "border-blue-600/20",
-    bgLightClass: "bg-blue-600/10",
-    ctaText: "Začít investovat s George",
+    bgColor: "#060d1f",
+    btnClass: "bg-[#0066FF] hover:bg-[#1a75ff] shadow-blue-600/30",
+    textClass: "text-[#0066FF]",
+    glowClass: "bg-[#0066FF]/15",
+    borderClass: "border-[#0066FF]/20",
+    bgLightClass: "bg-[#0066FF]/10",
+    ctaText: "Investovat s George",
     ctaLink: "https://www.george.csas.cz"
   }
 }

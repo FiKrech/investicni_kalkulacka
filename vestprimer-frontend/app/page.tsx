@@ -44,6 +44,17 @@ const PARTNERS: Record<string, any> = {
     bgLightClass: "bg-teal-500/10",
     ctaText: "Složit portfolio na Portu",
     ctaLink: "https://www.portu.cz"
+  },
+  george: {
+    name: "George",
+    bgColor: "#0a0a1a",
+    btnClass: "bg-[#1a3dff] hover:bg-[#2a4dff] shadow-blue-700/30",
+    textClass: "text-[#4d8aff]",
+    glowClass: "bg-blue-700/15",
+    borderClass: "border-blue-600/20",
+    bgLightClass: "bg-blue-600/10",
+    ctaText: "Začít investovat s George",
+    ctaLink: "https://www.george.csas.cz"
   }
 }
 

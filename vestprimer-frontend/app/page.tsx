@@ -85,6 +85,8 @@ export default function VestPrimerApp() {
   const [buyModalStock, setBuyModalStock] = useState<any>(null)
   const [buyAmount, setBuyAmount] = useState<number>(1)
   const [showBuySuccess, setShowBuySuccess] = useState(false)
+  const [isDashboardLoading, setIsDashboardLoading] = useState(false)
+  const [dashboardError, setDashboardError] = useState<string | null>(null)
 
   // Akademie
   const [progress, setProgress] = useState(0)
@@ -125,6 +127,8 @@ export default function VestPrimerApp() {
 
   // UPRAVENÝ NÁKUP S GOD MODEM
   const goToDashboard = async (simulateCrash = isGodMode) => {
+    setIsDashboardLoading(true)
+    setDashboardError(null)
     try {
       // Pokud je God Mode aktivní, lžeme Pythonu, že jsme nakoupili o 25% dráž = 20% propad trhu
       const payload = myPortfolio.map(p => ({
@@ -137,11 +141,15 @@ export default function VestPrimerApp() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       })
+      if (!res.ok) throw new Error(`API error ${res.status}`)
       const data = await res.json()
       setPortfolioData(data)
       setAppState("dashboard")
     } catch (err) {
       console.error("❌ Chyba při kalkulaci portfolia:", err)
+      setDashboardError("Nepodařilo se načíst data. Zkus to znovu.")
+    } finally {
+      setIsDashboardLoading(false)
     }
   }
 
@@ -207,14 +215,15 @@ export default function VestPrimerApp() {
                 ))}
 
                 <div className="pt-8 pb-4">
-                  <button 
+                  <button
                     onClick={() => goToDashboard(isGodMode)}
-                    disabled={myPortfolio.length === 0}
-                    className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${myPortfolio.length > 0 ? partner.btnClass + ' text-white shadow-xl' : 'bg-white/5 text-white/30 cursor-not-allowed'}`}
+                    disabled={myPortfolio.length === 0 || isDashboardLoading}
+                    className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${myPortfolio.length > 0 && !isDashboardLoading ? partner.btnClass + ' text-white shadow-xl' : 'bg-white/5 text-white/30 cursor-not-allowed'}`}
                   >
-                    🚀 Přejít na Dashboard
+                    {isDashboardLoading ? "⏳ Načítám data..." : "🚀 Přejít na Dashboard"}
                   </button>
                   {myPortfolio.length === 0 && <p className="text-center text-xs text-white/40 mt-3">Pro pokračování hoď do batohu alespoň jednu firmu.</p>}
+                  {dashboardError && <p className="text-center text-xs text-red-400 mt-3">{dashboardError}</p>}
                 </div>
               </div>
             )}

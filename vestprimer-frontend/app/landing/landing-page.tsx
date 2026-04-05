@@ -25,11 +25,13 @@ function PhoneMockup({
   alt,
   glowColor = '#3b7dea',
   size = 'lg',
+  objectPosition = 'top',
 }: {
   src: string
   alt: string
   glowColor?: string
   size?: 'lg' | 'md' | 'sm'
+  objectPosition?: string
 }) {
   const w = size === 'lg' ? 270 : size === 'md' ? 190 : 130
   const h = size === 'lg' ? 540 : size === 'md' ? 380 : 260
@@ -67,7 +69,7 @@ function PhoneMockup({
       <img
         src={src}
         alt={alt}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition }}
       />
     </div>
   )
@@ -222,22 +224,7 @@ function Hero() {
 
         {/* Phone hero */}
         <div className="vp-fade vp-hero-phone" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', transitionDelay: '0.15s' }}>
-          {/* Second phone (behind) — XTB welcome screen */}
-          <div
-            style={{
-              position: 'absolute',
-              left: '50%',
-              transform: 'translateX(-160px) rotate(-8deg) translateY(20px)',
-              opacity: 0.55,
-              filter: 'blur(1px)',
-            }}
-          >
-            <PhoneMockup src="/images/screenshots/xtb-verze.jpg" alt="VestPrimer XTB verze" glowColor="#e50000" />
-          </div>
-          {/* Main phone */}
-          <div style={{ position: 'relative', zIndex: 2 }}>
-            <PhoneMockup src="/images/screenshots/portfolio.png" alt="VestPrimer portfolio dashboard" glowColor="#3b7dea" />
-          </div>
+          <PhoneMockup src="/images/screenshots/portfolio.png" alt="VestPrimer portfolio dashboard" glowColor="#3b7dea" />
         </div>
       </div>
     </section>
@@ -328,7 +315,8 @@ const features = [
     color: '#3b7dea',
     title: 'Edukace bez finanční latiny',
     text: 'Místo P/E ratio vysvětlujeme Teorii Pizzy. Místo volatility Teorii Benzínu. Nováček pochopí za 3 minuty to, co by jinak vzdal.',
-    screenshot: '/images/screenshots/buy-modal.png',
+    screenshot: '/images/screenshots/pizza-theory.png',
+    objectPosition: 'center',
   },
   {
     num: '02',
@@ -405,7 +393,7 @@ function Solution() {
                   background: 'linear-gradient(to top, rgba(13,16,48,0.95), transparent)',
                   zIndex: 3, pointerEvents: 'none',
                 }} />
-                <PhoneMockup src={f.screenshot} alt={f.title} glowColor={f.color} size="lg" />
+                <PhoneMockup src={f.screenshot} alt={f.title} glowColor={f.color} size="lg" objectPosition={(f as any).objectPosition} />
               </div>
             </div>
           ))}

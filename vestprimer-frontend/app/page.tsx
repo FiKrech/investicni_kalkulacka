@@ -8,6 +8,7 @@ import { useState, useEffect } from "react"
 const PARTNERS: Record<string, any> = {
   default: {
     name: "VestPrimer",
+    logo: null,
     bgColor: "#0a0f1c",
     btnClass: "bg-blue-600 hover:bg-blue-500 shadow-blue-600/30",
     textClass: "text-blue-400",
@@ -17,6 +18,7 @@ const PARTNERS: Record<string, any> = {
   },
   xtb: {
     name: "XTB",
+    logo: "/images/logos/xtb.png",
     bgColor: "#050505",
     btnClass: "bg-[#e50000] hover:bg-red-600 shadow-red-600/30",
     textClass: "text-[#e50000]",
@@ -26,6 +28,7 @@ const PARTNERS: Record<string, any> = {
   },
   portu: {
     name: "Portu",
+    logo: "/images/logos/portu.png",
     bgColor: "#020617",
     btnClass: "bg-teal-500 hover:bg-teal-400 shadow-teal-500/30",
     textClass: "text-teal-400",
@@ -35,6 +38,7 @@ const PARTNERS: Record<string, any> = {
   },
   george: {
     name: "George",
+    logo: "/images/logos/george.png",
     bgColor: "#060d1f",
     btnClass: "bg-[#0066FF] hover:bg-[#1a75ff] shadow-blue-600/30",
     textClass: "text-[#0066FF]",
@@ -72,10 +76,19 @@ export default function WelcomePage() {
 
         {/* ── HEADER ── */}
         <div className="flex justify-between items-center mb-14">
-          <div className="flex items-center gap-2">
-            <span className={`font-black text-xl tracking-tighter ${partner.textClass}`}>
-              {partner.name}
-            </span>
+          <div className="flex items-center gap-2.5">
+            {partner.logo ? (
+              <img
+                src={partner.logo}
+                alt={partner.name}
+                className="h-8 w-auto object-contain"
+                style={{ maxWidth: "96px" }}
+              />
+            ) : (
+              <span className={`font-black text-xl tracking-tighter ${partner.textClass}`}>
+                {partner.name}
+              </span>
+            )}
             <span className="text-white/20">|</span>
             <span className="text-white/60 font-medium text-sm">VestPrimer</span>
           </div>

@@ -1,18 +1,48 @@
-from fastapi import FastAPI
+import os
+from fastapi import FastAPI, HTTPException, Security
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel
 from typing import List
 import yfinance as yf
 
 app = FastAPI(title="VestPrimer API")
 
+# --- CORS ---
+# Povolené originy se konfigurují přes env ALLOWED_ORIGINS (čárkami oddělený seznam).
+# Výchozí hodnota je prázdná — je nutné explicitně nastavit v produkci.
+_raw_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000")
+ALLOWED_ORIGINS = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "X-Partner-Key"],
 )
+
+# --- API KEY AUTENTIZACE ---
+# Partneři posílají klíč v hlavičce X-Partner-Key.
+# Klíč se konfiguruje přes env PARTNER_API_KEY.
+# Pokud proměnná není nastavena, API funguje bez autentizace (dev mód).
+_API_KEY = os.getenv("PARTNER_API_KEY", "")
+_api_key_header = APIKeyHeader(name="X-Partner-Key", auto_error=False)
+
+
+def verify_partner_key(api_key: str | None = Security(_api_key_header)) -> None:
+    if not _API_KEY:
+        # Dev mód — klíč není nastaven, autentizace přeskočena
+        return
+    if api_key != _API_KEY:
+        raise HTTPException(status_code=401, detail="Neplatný nebo chybějící X-Partner-Key")
+
+
+# --- HEALTH CHECK ---
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "service": "vestprimer-api"}
+
 
 KURZ_USD_CZK = 23.50
 
@@ -73,7 +103,7 @@ class PortfolioItem(BaseModel):
     buy_price_usd: float
 
 @app.post("/api/recommend")
-def get_recommendations(prefs: UserPrefs):
+def get_recommendations(prefs: UserPrefs, _: None = Security(verify_partner_key)):
     # 1. Mapování cíle (Neprůstřelné)
     goal_str = prefs.goal.lower()
     cil = "Dividenda" if "dividend" in goal_str or "výplat" in goal_str else "Růst"
@@ -143,7 +173,7 @@ def get_recommendations(prefs: UserPrefs):
     return vysledky
 
 @app.post("/api/portfolio")
-def calculate_portfolio(items: List[PortfolioItem]):
+def calculate_portfolio(items: List[PortfolioItem], _: None = Security(verify_partner_key)):
     total_val = 0
     total_invested = 0
     rocni_divi = 0

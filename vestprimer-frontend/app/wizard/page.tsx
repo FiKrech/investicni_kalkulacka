@@ -5,58 +5,10 @@ import { AkademieHeader } from "@/components/akademie-header"
 import { LessonCard } from "@/components/lesson-card"
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard"
 import { DisclaimerBanner } from "@/components/disclaimer-banner"
+import { PARTNERS, getPartner } from "@/lib/partners"
+import { fetchRecommendations, fetchPortfolio } from "@/lib/api"
 
 const TOTAL_SEGMENTS = 4
-
-// ==========================================
-// 🦎 CHAMELEONÍ KONFIGURACE PARTNERŮ
-// ==========================================
-const PARTNERS: Record<string, any> = {
-  default: {
-    name: "VestPrimer",
-    bgColor: "#0a0f1c", // Tmavě modrá
-    btnClass: "bg-blue-600 hover:bg-blue-500 shadow-blue-600/30",
-    textClass: "text-blue-400",
-    glowClass: "bg-blue-600/15",
-    borderClass: "border-blue-500/20",
-    bgLightClass: "bg-blue-500/10",
-    ctaText: "Otevřít účet u Brokera",
-    ctaLink: "https://www.xtb.com/cz"
-  },
-  xtb: {
-    name: "XTB",
-    bgColor: "#050505", // Temnější
-    btnClass: "bg-[#e50000] hover:bg-red-600 shadow-red-600/30", // XTB Červená!
-    textClass: "text-[#e50000]",
-    glowClass: "bg-red-600/10",
-    borderClass: "border-red-500/20",
-    bgLightClass: "bg-zinc-900",
-    ctaText: "Začít investovat s XTB",
-    ctaLink: "https://www.xtb.com/cz"
-  },
-  portu: {
-    name: "Portu",
-    bgColor: "#160d40", // Tmavá indigo/fialová z loga
-    btnClass: "bg-[#22c55e] hover:bg-[#16a34a] shadow-green-500/30", // Zelená z loga
-    textClass: "text-[#22c55e]",
-    glowClass: "bg-[#22c55e]/15",
-    borderClass: "border-[#22c55e]/25",
-    bgLightClass: "bg-[#22c55e]/10",
-    ctaText: "Složit portfolio na Portu",
-    ctaLink: "https://www.portu.cz"
-  },
-  george: {
-    name: "George",
-    bgColor: "#012d5c", // Deep navy z loga George
-    btnClass: "bg-[#0066FF] hover:bg-[#1a75ff] shadow-[#0066FF]/40", // George modrá
-    textClass: "text-[#60a5fa]", // Světlejší modrá pro čitelnost na dark navy
-    glowClass: "bg-[#0066FF]/20",
-    borderClass: "border-[#0066FF]/30",
-    bgLightClass: "bg-[#0066FF]/10",
-    ctaText: "Investovat s George",
-    ctaLink: "https://www.george.csas.cz"
-  }
-}
 
 export default function VestPrimerApp() {
   const [activeTab, setActiveTab] = useState("portfolio")
@@ -69,7 +21,7 @@ export default function VestPrimerApp() {
     // Tohle se spustí jen v prohlížeči, přečte URL a najde ?partner=... a ?tab=...
     const params = new URLSearchParams(window.location.search)
     const p = params.get("partner")
-    if (p && PARTNERS[p]) {
+    if (p && p in PARTNERS) {
       setPartnerId(p)
     }
     const tab = params.get("tab")
@@ -78,7 +30,7 @@ export default function VestPrimerApp() {
     }
   }, [])
 
-  const partner = PARTNERS[partnerId]
+  const partner = getPartner(partnerId)
 
   // Paměť pro nákupy
   const [recommendedStocks, setRecommendedStocks] = useState<any[]>([])
@@ -95,7 +47,8 @@ export default function VestPrimerApp() {
   // Akademie
   const [progress, setProgress] = useState(0)
 
-  // ⚡ GOD MODE PAMĚŤ
+  // God Mode je dostupný jen ve vývojovém prostředí
+  const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE === "true"
   const [isGodMode, setIsGodMode] = useState(false)
 
   const handleAdvance = useCallback(() => {
@@ -105,12 +58,7 @@ export default function VestPrimerApp() {
   // --- KOMUNIKACE S MOZKEM (PYTHON) ---
   const handleWizardComplete = async (data: any) => {
     try {
-      const res = await fetch("https://vestprimer-api.onrender.com/api/recommend", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      })
-      const recs = await res.json()
+      const recs = await fetchRecommendations(data)
       setRecommendedStocks(recs)
       setAppState("results")
     } catch (err) {
@@ -129,24 +77,18 @@ export default function VestPrimerApp() {
     setShowBuySuccess(true)
   }
 
-  // UPRAVENÝ NÁKUP S GOD MODEM
-  const goToDashboard = async (simulateCrash = isGodMode) => {
+  const goToDashboard = async () => {
     setIsDashboardLoading(true)
     setDashboardError(null)
     try {
-      // Pokud je God Mode aktivní, lžeme Pythonu, že jsme nakoupili o 25% dráž = 20% propad trhu
+      // God Mode: simulace propadu — pouze v dev prostředí
+      const simulateCrash = isDevMode && isGodMode
       const payload = myPortfolio.map(p => ({
         ...p,
         buy_price_usd: simulateCrash ? p.buy_price_usd * 1.25 : p.buy_price_usd
       }))
 
-      const res = await fetch("https://vestprimer-api.onrender.com/api/portfolio", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      })
-      if (!res.ok) throw new Error(`API error ${res.status}`)
-      const data = await res.json()
+      const data = await fetchPortfolio(payload)
       setPortfolioData(data)
       setAppState("dashboard")
     } catch (err) {
@@ -220,7 +162,7 @@ export default function VestPrimerApp() {
 
                 <div className="pt-8 pb-4">
                   <button
-                    onClick={() => goToDashboard(isGodMode)}
+                    onClick={() => goToDashboard()}
                     disabled={myPortfolio.length === 0 || isDashboardLoading}
                     className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${myPortfolio.length > 0 && !isDashboardLoading ? partner.btnClass + ' text-white shadow-xl' : 'bg-white/5 text-white/30 cursor-not-allowed'}`}
                   >
@@ -371,23 +313,23 @@ export default function VestPrimerApp() {
                   </p>
                 </div>
 
-                {/* =========================================
-                    ⚡ GOD MODE TLAČÍTKO ⚡
-                    ========================================= */}
-                <button 
-                  onClick={() => {
-                    const newMode = !isGodMode;
-                    setIsGodMode(newMode);
-                    goToDashboard(newMode);
-                  }}
-                  className={`w-full py-4 rounded-xl border transition-all font-bold text-sm mb-4 flex items-center justify-center gap-2 ${
-                    isGodMode 
-                      ? "bg-red-500/20 border-red-500/50 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.2)]" 
-                      : "bg-white/5 border-white/10 text-white/40 hover:bg-white/10 hover:text-white/70"
-                  }`}
-                >
-                  <span>⚡</span> {isGodMode ? "Vypnout God Mode (Návrat na reálné ceny)" : "GOD MODE: Simulovat pád trhu o 20 %"}
-                </button>
+                {/* God Mode — pouze v dev prostředí (NEXT_PUBLIC_DEV_MODE=true) */}
+                {isDevMode && (
+                  <button
+                    onClick={() => {
+                      const newMode = !isGodMode
+                      setIsGodMode(newMode)
+                      goToDashboard()
+                    }}
+                    className={`w-full py-4 rounded-xl border transition-all font-bold text-sm mb-4 flex items-center justify-center gap-2 ${
+                      isGodMode
+                        ? "bg-red-500/20 border-red-500/50 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.2)]"
+                        : "bg-white/5 border-white/10 text-white/40 hover:bg-white/10 hover:text-white/70"
+                    }`}
+                  >
+                    <span>⚡</span> {isGodMode ? "Vypnout God Mode (Návrat na reálné ceny)" : "GOD MODE: Simulovat pád trhu o 20 %"}
+                  </button>
+                )}
 
                 {/* Tlačítko pro návrat */}
                 <button 

@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp \"/c/Users/filip/Desktop/Nápady/VestPrimer/Screeny aplikace/Snímek obrazovky 2026-04-04 120946.png\" d:/investicni_kalkulacka/vestprimer-frontend/public/images/screenshots/sectors.png)",
+      "Bash(cp \"/c/Users/filip/Desktop/Nápady/VestPrimer/Screeny aplikace/Snímek obrazovky 2026-04-04 120954.png\" d:/investicni_kalkulacka/vestprimer-frontend/public/images/screenshots/risk.png)",
+      "Bash(cp \"/c/Users/filip/Desktop/Nápady/VestPrimer/Screeny aplikace/Snímek obrazovky 2026-04-04 121007.png\" d:/investicni_kalkulacka/vestprimer-frontend/public/images/screenshots/onboarding-goals.png)",
+      "Bash(cp \"/c/Users/filip/Desktop/Nápady/VestPrimer/Screeny aplikace/Snímek obrazovky 2026-04-04 121027.png\" d:/investicni_kalkulacka/vestprimer-frontend/public/images/screenshots/anti-panic.png)",
+      "Bash(cp \"/c/Users/filip/Desktop/Nápady/VestPrimer/Screeny aplikace/Snímek obrazovky 2026-04-04 121034.png\" d:/investicni_kalkulacka/vestprimer-frontend/public/images/screenshots/pizza-theory.png)",
+      "Bash(grep -r \"usePartner\\\\|useTheme\\\\|useRouter\" /d/investicni_kalkulacka/vestprimer-frontend --include=\"*.ts\" --include=\"*.tsx\" ! -path \"*/node_modules/*\" ! -path \"*/.next/*\")",
+      "Bash(grep -r \"useRouter\\\\|useTheme\\\\|usePartner\" /d/investicni_kalkulacka/vestprimer-frontend --include=\"*.ts\" --include=\"*.tsx\" ! -path \"*/node_modules/*\" ! -path \"*/.next/*\")",
+      "Bash(npx tsc:*)",
+      "Read(//c/Users/filip/**)",
+      "Bash(find /mnt -name \"*.png\")",
+      "Read(//d//**)",
+      "Bash(ls /mnt/)",
+      "Bash(ls /tmp/)",
+      "Bash(cmd //c copy /Y \"D:\\\\\\\\investicni_kalkulacka\\\\\\\\screenshot\\\\\\\\VestPrimer - XTB verze.jpg\" \"D:\\\\\\\\investicni_kalkulacka\\\\\\\\vestprimer-frontend\\\\\\\\public\\\\\\\\images\\\\\\\\screenshots\\\\\\\\xtb-verze.jpg\")",
+      "Bash(cmd //c copy /Y \"D:\\\\\\\\investicni_kalkulacka\\\\\\\\screenshot\\\\\\\\VestPrimer - George verze.jpg\" \"D:\\\\\\\\investicni_kalkulacka\\\\\\\\vestprimer-frontend\\\\\\\\public\\\\\\\\images\\\\\\\\screenshots\\\\\\\\george-verze.jpg\")",
+      "Bash(cmd //c copy /Y \"D:\\\\\\\\investicni_kalkulacka\\\\\\\\screenshot\\\\\\\\VestPrimer - Portu verze.jpg\" \"D:\\\\\\\\investicni_kalkulacka\\\\\\\\vestprimer-frontend\\\\\\\\public\\\\\\\\images\\\\\\\\screenshots\\\\\\\\portu-verze.jpg\")",
+      "Bash(powershell -Command \"Copy-Item 'D:\\\\investicni_kalkulacka\\\\screenshot\\\\VestPrimer - XTB verze.jpg' -Destination 'D:\\\\investicni_kalkulacka\\\\vestprimer-frontend\\\\public\\\\images\\\\screenshots\\\\xtb-verze.jpg' -Force; Copy-Item 'D:\\\\investicni_kalkulacka\\\\screenshot\\\\VestPrimer - George verze.jpg' -Destination 'D:\\\\investicni_kalkulacka\\\\vestprimer-frontend\\\\public\\\\images\\\\screenshots\\\\george-verze.jpg' -Force; Copy-Item 'D:\\\\investicni_kalkulacka\\\\screenshot\\\\VestPrimer - Portu verze.jpg' -Destination 'D:\\\\investicni_kalkulacka\\\\vestprimer-frontend\\\\public\\\\images\\\\screenshots\\\\portu-verze.jpg' -Force; echo 'OK'\")"
+    ]
+  }
+}

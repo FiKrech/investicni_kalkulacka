@@ -14,7 +14,7 @@ const dmSans = DM_Sans({
   variable: '--vp-sans',
 })
 
-const CTA_HREF = 'mailto:filip@vestprimer.cz'
+const CTA_HREF = 'mailto:filip.krechler@seznam.cz'
 const LINKEDIN_HREF = 'https://www.linkedin.com/in/filipkrechler'
 
 // ---------------------------------------------------------------------------
@@ -29,12 +29,12 @@ function PhoneMockup({
   src: string
   alt: string
   glowColor?: string
-  size?: 'lg' | 'sm'
+  size?: 'lg' | 'md' | 'sm'
 }) {
-  const w = size === 'lg' ? 270 : 130
-  const h = size === 'lg' ? 540 : 260
-  const r = size === 'lg' ? 36 : 20
-  const b = size === 'lg' ? 5 : 3
+  const w = size === 'lg' ? 270 : size === 'md' ? 190 : 130
+  const h = size === 'lg' ? 540 : size === 'md' ? 380 : 260
+  const r = size === 'lg' ? 36 : size === 'md' ? 28 : 20
+  const b = size === 'lg' ? 5 : size === 'md' ? 4 : 3
 
   return (
     <div
@@ -222,7 +222,7 @@ function Hero() {
 
         {/* Phone hero */}
         <div className="vp-fade vp-hero-phone" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', transitionDelay: '0.15s' }}>
-          {/* Second phone (behind) */}
+          {/* Second phone (behind) — XTB welcome screen */}
           <div
             style={{
               position: 'absolute',
@@ -232,7 +232,7 @@ function Hero() {
               filter: 'blur(1px)',
             }}
           >
-            <PhoneMockup src="/images/screenshots/success.png" alt="VestPrimer anti-panic" glowColor="#22c55e" />
+            <PhoneMockup src="/images/screenshots/xtb-verze.jpg" alt="VestPrimer XTB verze" glowColor="#e50000" />
           </div>
           {/* Main phone */}
           <div style={{ position: 'relative', zIndex: 2 }}>
@@ -353,7 +353,16 @@ const features = [
   },
 ]
 
+const chameleonPhones = [
+  { src: '/images/screenshots/xtb-verze.jpg', label: 'XTB', color: '#e50000' },
+  { src: '/images/screenshots/george-verze.jpg', label: 'George', color: '#0066FF' },
+  { src: '/images/screenshots/portu-verze.jpg', label: 'Portu', color: '#22c55e' },
+]
+
 function Solution() {
+  const regularFeatures = features.filter((f) => f.num !== '04')
+  const chameleonFeature = features.find((f) => f.num === '04')!
+
   return (
     <section className="vp-section vp-section-alt" id="reseni">
       <div className="vp-container">
@@ -363,77 +372,86 @@ function Solution() {
           sub="VestPrimer není konkurence. Je to ochranná vrstva, která sedí před vaší obchodní aplikací a transformuje nováčka na připraveného investora."
         />
 
+        {/* Karty 01–03: row layout — text vlevo, phone vpravo */}
         <div className="vp-features-grid">
-          {features.map((f, i) => (
+          {regularFeatures.map((f, i) => (
             <div
               key={i}
-              className="vp-fade vp-feature-card"
+              className="vp-fade vp-feature-card vp-feature-card-row"
               style={{ transitionDelay: `${0.08 + i * 0.1}s`, '--fc': f.color } as React.CSSProperties}
             >
-              <div style={{ padding: '2rem 2rem 1.25rem' }}>
-                <div
-                  style={{
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.1em',
-                    color: f.color,
-                    marginBottom: '0.875rem',
-                  }}
-                >
+              {/* Text */}
+              <div className="vp-feature-card-text">
+                <div style={{ fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.1em', color: f.color, marginBottom: '0.875rem' }}>
                   {f.num}
                 </div>
-                <h3 style={{ fontSize: '1.1875rem', fontWeight: 700, color: '#eef2ff', marginBottom: '0.625rem' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#eef2ff', marginBottom: '0.75rem' }}>
                   {f.title}
                 </h3>
-                <p style={{ fontSize: '0.9375rem', color: '#7888a8', lineHeight: 1.68 }}>{f.text}</p>
+                <p style={{ fontSize: '0.9375rem', color: '#7888a8', lineHeight: 1.72 }}>{f.text}</p>
               </div>
 
-              {/* Screenshot strip */}
-              <div
-                style={{
-                  position: 'relative',
-                  height: 220,
-                  overflow: 'hidden',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'flex-end',
-                }}
-              >
-                {/* Fade overlay top */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: 60,
-                    background: 'linear-gradient(to bottom, var(--vp-card-bg, #0d1030), transparent)',
-                    zIndex: 3,
-                    pointerEvents: 'none',
-                  }}
-                />
-                {/* Glow behind phone */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: -40,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: 180,
-                    height: 180,
-                    borderRadius: '50%',
-                    background: f.color,
-                    opacity: 0.12,
-                    filter: 'blur(40px)',
-                    pointerEvents: 'none',
-                  }}
-                />
-                <div style={{ position: 'relative', zIndex: 2, marginBottom: -20 }}>
-                  <PhoneMockup src={f.screenshot} alt={f.title} glowColor={f.color} size="sm" />
-                </div>
+              {/* Phone visual */}
+              <div className="vp-feature-card-visual">
+                {/* Glow */}
+                <div style={{
+                  position: 'absolute', bottom: -60, left: '50%', transform: 'translateX(-50%)',
+                  width: 260, height: 260, borderRadius: '50%',
+                  background: f.color, opacity: 0.1, filter: 'blur(60px)', pointerEvents: 'none',
+                }} />
+                {/* Fade bottom */}
+                <div style={{
+                  position: 'absolute', bottom: 0, left: 0, right: 0, height: 80,
+                  background: 'linear-gradient(to top, rgba(13,16,48,0.95), transparent)',
+                  zIndex: 3, pointerEvents: 'none',
+                }} />
+                <PhoneMockup src={f.screenshot} alt={f.title} glowColor={f.color} size="lg" />
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Karta 04: Chameleon Engine — tři phones XTB / George / Portu */}
+        <div
+          className="vp-fade vp-feature-card vp-feature-card-chameleon"
+          style={{ transitionDelay: '0.38s', '--fc': chameleonFeature.color } as React.CSSProperties}
+        >
+          {/* Text */}
+          <div className="vp-feature-card-text" style={{ flex: '0 0 auto', maxWidth: '36rem' }}>
+            <div style={{ fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.1em', color: chameleonFeature.color, marginBottom: '0.875rem' }}>
+              {chameleonFeature.num}
+            </div>
+            <h3 style={{ fontSize: '1.375rem', fontWeight: 700, color: '#eef2ff', marginBottom: '0.75rem' }}>
+              {chameleonFeature.title}
+            </h3>
+            <p style={{ fontSize: '0.9375rem', color: '#7888a8', lineHeight: 1.72 }}>{chameleonFeature.text}</p>
+          </div>
+
+          {/* Tři phones */}
+          <div className="vp-chameleon-phones">
+            {chameleonPhones.map(({ src, label, color }) => (
+              <div key={label} className="vp-chameleon-phone">
+                {/* Glow pod telefonem */}
+                <div style={{
+                  position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+                  width: 120, height: 80, borderRadius: '50%',
+                  background: color, opacity: 0.18, filter: 'blur(28px)', pointerEvents: 'none',
+                }} />
+                <PhoneMockup src={src} alt={`VestPrimer ${label} verze`} glowColor={color} size="md" />
+                <div style={{
+                  marginTop: '0.875rem',
+                  fontSize: '0.8125rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase' as const,
+                  color,
+                  textAlign: 'center' as const,
+                }}>
+                  {label}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -921,8 +939,58 @@ const css = `
   }
   .vp-features-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Feature karta — row layout (desktop) */
+  .vp-feature-card-row {
+    flex-direction: row;
+    min-height: 420px;
+  }
+  .vp-feature-card-text {
+    flex: 0 0 42%;
+    padding: 2.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .vp-feature-card-visual {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 2.5rem;
+    border-left: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* Chameleon karta — full width, flex row na desktopu */
+  .vp-feature-card-chameleon {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+    background: linear-gradient(135deg, rgba(230,57,70,0.06) 0%, rgba(255,255,255,0.02) 60%);
+    border-color: rgba(230,57,70,0.18);
+    padding: 2.75rem 2.75rem 2.75rem 2.75rem;
+    gap: 3rem;
+  }
+  .vp-chameleon-phones {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: flex-end;
+    flex: 1;
+    padding: 1rem 0;
+  }
+  .vp-chameleon-phone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
   }
   .vp-bm-grid {
     display: grid;
@@ -973,9 +1041,6 @@ const css = `
   }
 
   /* Responsive */
-  @media (max-width: 1024px) {
-    .vp-features-grid { grid-template-columns: 1fr 1fr; }
-  }
   @media (max-width: 768px) {
     .vp-hero-inner {
       grid-template-columns: 1fr !important;
@@ -984,9 +1049,40 @@ const css = `
     }
     .vp-hero-phone { order: -1; }
     .vp-grid-3 { grid-template-columns: 1fr; }
-    .vp-features-grid { grid-template-columns: 1fr; }
     .vp-bm-grid { grid-template-columns: 1fr; }
     .vp-steps-row { grid-template-columns: 1fr; text-align: left; }
+
+    /* Feature karty — mobil: column */
+    .vp-feature-card-row {
+      flex-direction: column;
+      min-height: auto;
+    }
+    .vp-feature-card-text {
+      flex: none;
+      padding: 2rem;
+    }
+    .vp-feature-card-visual {
+      flex: none;
+      border-left: none;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      height: 280px;
+      padding-top: 2rem;
+      justify-content: center;
+    }
+
+    /* Chameleon — mobil: column, phones scroll */
+    .vp-feature-card-chameleon {
+      flex-direction: column;
+      padding: 2rem;
+      gap: 1.5rem;
+    }
+    .vp-chameleon-phones {
+      overflow-x: auto;
+      justify-content: flex-start;
+      padding-bottom: 0.5rem;
+      gap: 1.25rem;
+      width: 100%;
+    }
     .vp-step { align-items: flex-start; }
     .vp-section { padding: 4rem 0; }
   }

@@ -36,22 +36,22 @@ const PARTNERS: Record<string, any> = {
   },
   portu: {
     name: "Portu",
-    bgColor: "#020617", // Břidlicová
-    btnClass: "bg-teal-500 hover:bg-teal-400 shadow-teal-500/30",
-    textClass: "text-teal-400",
-    glowClass: "bg-teal-500/15",
-    borderClass: "border-teal-500/20",
-    bgLightClass: "bg-teal-500/10",
+    bgColor: "#160d40", // Tmavá indigo/fialová z loga
+    btnClass: "bg-[#22c55e] hover:bg-[#16a34a] shadow-green-500/30", // Zelená z loga
+    textClass: "text-[#22c55e]",
+    glowClass: "bg-[#22c55e]/15",
+    borderClass: "border-[#22c55e]/25",
+    bgLightClass: "bg-[#22c55e]/10",
     ctaText: "Složit portfolio na Portu",
     ctaLink: "https://www.portu.cz"
   },
   george: {
     name: "George",
-    bgColor: "#060d1f",
-    btnClass: "bg-[#0066FF] hover:bg-[#1a75ff] shadow-blue-600/30",
-    textClass: "text-[#0066FF]",
-    glowClass: "bg-[#0066FF]/15",
-    borderClass: "border-[#0066FF]/20",
+    bgColor: "#012d5c", // Deep navy z loga George
+    btnClass: "bg-[#0066FF] hover:bg-[#1a75ff] shadow-[#0066FF]/40", // George modrá
+    textClass: "text-[#60a5fa]", // Světlejší modrá pro čitelnost na dark navy
+    glowClass: "bg-[#0066FF]/20",
+    borderClass: "border-[#0066FF]/30",
     bgLightClass: "bg-[#0066FF]/10",
     ctaText: "Investovat s George",
     ctaLink: "https://www.george.csas.cz"

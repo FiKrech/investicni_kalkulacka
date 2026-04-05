@@ -222,9 +222,34 @@ function Hero() {
           </div>
         </div>
 
-        {/* Phone hero */}
-        <div className="vp-fade vp-hero-phone" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', transitionDelay: '0.15s' }}>
-          <PhoneMockup src="/images/screenshots/portfolio.png" alt="VestPrimer portfolio dashboard" glowColor="#3b7dea" />
+        {/* Phone hero — XTB / George / Portu side by side */}
+        <div className="vp-fade vp-hero-phone" style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end', gap: '1rem', position: 'relative', transitionDelay: '0.15s', paddingBottom: '1.5rem' }}>
+          {[
+            { src: '/images/screenshots/xtb-verze.jpg', label: 'XTB', color: '#e50000', size: 'sm' as const },
+            { src: '/images/screenshots/george-verze.jpg', label: 'George', color: '#0066FF', size: 'md' as const },
+            { src: '/images/screenshots/portu-verze.jpg', label: 'Portu', color: '#22c55e', size: 'sm' as const },
+          ].map(({ src, label, color, size }) => (
+            <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+              {/* Ambient glow */}
+              <div style={{
+                position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)',
+                width: 90, height: 60, borderRadius: '50%',
+                background: color, opacity: 0.18, filter: 'blur(22px)', pointerEvents: 'none',
+              }} />
+              <PhoneMockup src={src} alt={`VestPrimer ${label}`} glowColor={color} size={size} />
+              <div style={{
+                marginTop: '0.75rem',
+                fontSize: '0.7rem',
+                fontWeight: 700,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase' as const,
+                color,
+                textAlign: 'center' as const,
+              }}>
+                {label}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -323,7 +348,7 @@ const features = [
     color: '#22c55e',
     title: 'Anti-Panic Algoritmus',
     text: 'Pokles není ztráta, ale SLEVA. Klient je motivován dokupovat, ne prodávat v panice. Churn se mění na příležitost.',
-    screenshot: '/images/screenshots/success.png',
+    screenshot: '/images/screenshots/anti-panic.jpg',
   },
   {
     num: '03',
@@ -1035,7 +1060,7 @@ const css = `
       min-height: auto !important;
       gap: 2.5rem !important;
     }
-    .vp-hero-phone { order: -1; }
+    .vp-hero-phone { order: -1; overflow-x: auto; justify-content: flex-start !important; padding-left: 1rem; padding-right: 1rem; }
     .vp-grid-3 { grid-template-columns: 1fr; }
     .vp-bm-grid { grid-template-columns: 1fr; }
     .vp-steps-row { grid-template-columns: 1fr; text-align: left; }
